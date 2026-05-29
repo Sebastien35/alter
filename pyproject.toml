@@ -16,3 +16,9 @@ dependencies = [
 
 [project.scripts]
 alter = "alter.frameworks.typer_app.app:app"
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.16.2",
+    "pre-commit>=4.6.0",
+]
