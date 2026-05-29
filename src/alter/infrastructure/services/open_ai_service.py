@@ -1,8 +1,13 @@
+"""Ollama / OpenAI service"""
+
 from openai import OpenAI
+
 from alter.config import config
 
 
 class OpenAIService:
+    """OpenAiService implements interaction to the ollama runned model"""
+
     def __init__(self):
         self.base_url = config.open_ai_config.base_url
         self.api_key = config.open_ai_config.api_key

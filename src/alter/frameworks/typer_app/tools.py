@@ -1,3 +1,5 @@
+"""Defines a list of tools that the model can call"""
+
 TOOLS = [
     {
         "type": "function",
@@ -9,9 +11,9 @@ TOOLS = [
                 "properties": {
                     "path": {"type": "string", "description": "Path to the file"}
                 },
-                "required": ["path"]
-            }
-        }
+                "required": ["path"],
+            },
+        },
     },
     {
         "type": "function",
@@ -22,11 +24,11 @@ TOOLS = [
                 "type": "object",
                 "properties": {
                     "path": {"type": "string", "description": "Path to the file"},
-                    "content": {"type": "string", "description": "Content to write"}
+                    "content": {"type": "string", "description": "Content to write"},
                 },
-                "required": ["path", "content"]
-            }
-        }
+                "required": ["path", "content"],
+            },
+        },
     },
     {
         "type": "function",
@@ -36,10 +38,14 @@ TOOLS = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "path": {"type": "string", "description": "Directory path", "default": "."}
+                    "path": {
+                        "type": "string",
+                        "description": "Directory path",
+                        "default": ".",
+                    }
                 },
-                "required": []
-            }
-        }
+                "required": [],
+            },
+        },
     },
 ]

@@ -1,15 +1,20 @@
-import typer
+"""Cli app to run alter project"""
+
 import json
-from pathlib import Path
 from logging import getLogger
-from rich import print
+from pathlib import Path
+
+import typer
+from rich import print as pprint
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.prompt import Prompt
+
 from alter.config import config
 from alter.infrastructure.services.open_ai_service import OpenAIService
-from .tools import TOOLS
+
 from .prompts import SYSTEM_PROMPT
+from .tools import TOOLS
 
 logger = getLogger(__name__)
 app = typer.Typer(
@@ -41,7 +46,7 @@ def repl(model: str = typer.Option(config.open_ai_config.model, "-m")):
     service = OpenAIService()
     history = [{"role": "system", "content": SYSTEM_PROMPT}]
 
-    print(
+    pprint(
         Panel.fit(
             f"[bold cyan]{config.app_config.name}[/] [dim]v{config.app_config.version}[/]\n"
             f"[dim]model: {model}  ·  Ctrl+C to exit[/]",
@@ -71,7 +76,7 @@ def repl(model: str = typer.Option(config.open_ai_config.model, "-m")):
                         name = tool_call["function"]["name"]
                         args = json.loads(tool_call["function"]["arguments"])
 
-                        print(f"  [yellow]⚙[/] [bold]{name}[/][dim]({args})[/]")
+                        pprint(f"  [yellow]⚙[/] [bold]{name}[/][dim]({args})[/]")
                         result = execute_tool(name, args)
 
                         history.append(
@@ -82,10 +87,10 @@ def repl(model: str = typer.Option(config.open_ai_config.model, "-m")):
                             }
                         )
                 else:
-                    # No more tool calls — print final reply and break inner loop
+                    # No more tool calls — pprint final reply and break inner loop
                     reply = message["content"]
                     history.append({"role": "assistant", "content": reply})
-                    print(
+                    pprint(
                         Panel(
                             Markdown(reply),
                             title="[bold magenta]✨ Assistant[/]",
@@ -97,5 +102,5 @@ def repl(model: str = typer.Option(config.open_ai_config.model, "-m")):
                     break
 
         except (KeyboardInterrupt, EOFError):
-            print("\n[dim]Bye![/]")
+            pprint("\n[dim]Bye![/]")
             raise typer.Exit()

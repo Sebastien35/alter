@@ -25,7 +25,9 @@ alter = "alter.frameworks.typer_app.app:app"
 [dependency-groups]
 dev = [
     "commitizen>=4.16.2",
+    "isort>=8.0.1",
     "pre-commit>=4.6.0",
+    "pylint>=4.0.5",
     "pytest>=9.0.3",
     "ruff>=0.15.15",
     "yamllint>=1.38.0",
