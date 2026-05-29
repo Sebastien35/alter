@@ -1,0 +1,19 @@
+services:
+  lama:
+    image: ollama/ollama
+    container_name: alter-lama
+    restart: always
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "2000:11434"
+    entrypoint: ["/bin/sh", "-c", "ollama serve & until ollama list 2>/dev/null; do sleep 2; done; ollama pull qwen2.5:3b; wait"]
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list 2>/dev/null | grep -q qwen2"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 300s  # ~4 GB download on first boot
+    
+volumes:
+  ollama-data:
