@@ -21,4 +21,6 @@ alter = "alter.frameworks.typer_app.app:app"
 dev = [
     "commitizen>=4.16.2",
     "pre-commit>=4.6.0",
+    "pytest>=9.0.3",
+    "yamllint>=1.38.0",
 ]

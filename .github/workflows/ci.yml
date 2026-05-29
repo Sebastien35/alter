@@ -1,0 +1,54 @@
+---
+name: CI
+on:
+  push:
+    branches: [main, dev, develop, ci]
+    tags: ['*']
+  pull_request:
+    branches: [main, dev, develop, ci]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    - name: Set up Python
+      run: uv python install 3.10
+    - name: Install dependencies
+      run: uv sync --extra dev
+
+    - name: ruff
+      run: uv run ruff check .
+
+    - name: pylint
+      run: uv run pylint src/ --fail-under=8.0
+
+    - name: yamllint
+      run: uv run yamllint .
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    - name: Set up Python
+      run: uv python install 3.10
+    - name: Install dependencies
+      run: uv sync --extra dev
+
+    - name: Load all repo secrets as env vars
+      env:
+        SECRETS_CONTEXT: ${{ toJson(secrets) }}
+      run: |
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "$SECRETS_CONTEXT" | jq -r "to_entries[] | \"\(.key)<<$EOF\n\(.value)\n$EOF\"" >> $GITHUB_ENV
+
+    - name: pytest
+      run: uv run pytest
